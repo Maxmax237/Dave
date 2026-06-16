@@ -237,20 +237,20 @@
           <div class="text-white-50 fs-6 text-start col-12">
             <div class="row">
               <div class="col-12 mb-2">
-                <span>+94314578943/+94704572368</span>
+                <span>+237692030989/</span>
               </div>
               <div class="col-12">
-                <span>Learning.lk,</span>
+                <span>Mon Ecole,</span>
               </div>
               <div class="col-12">
-                <span>sandeepalakruwan@gmail.com</span>
+                <span>ikenghengadavid@gmail.com</span>
               </div>
             </div>
           </div>
           <div class="text-center col-12">
             <p class="text-white-50 mt-3 mb-1">
-              Copyright 2023&copy; – Learning.lk. All Rights Reserved.
-              Solution by Sandeepa Lakruwan
+              Copyright 2026&copy; – Mon Ecole. All Rights Reserved.
+              Solution by David Lakruwan
             </p>
           </div>
           <div class="text-center col-12">

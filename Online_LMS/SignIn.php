@@ -59,7 +59,7 @@
                         </div>
                     </div>
                     <div class="col-12 text-center text-black-50 mt-2 mb-2">
-                        <label>Learning.lk | Solution by Sandeepa&copy; 2023</label>
+                        <label>Mon Ecole | Solution by David&copy; 2026</label>
                     </div>
 
                 </div>
