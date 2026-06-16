@@ -1,179 +1,126 @@
+<?php
+session_start();
+if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] != 'employer') {
+    header("Location: SignIn.php?error=Accès réservé aux administrateurs");
+    exit();
+}
+
+require_once 'config.php';
+$conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
+
+// Statistiques globales
+$stats = [
+    'students' => $conn->query("SELECT COUNT(*) FROM users WHERE user_type = 'student'")->fetch_row()[0],
+    'teachers' => $conn->query("SELECT COUNT(*) FROM users WHERE user_type = 'teacher'")->fetch_row()[0],
+    'courses' => $conn->query("SELECT COUNT(*) FROM courses")->fetch_row()[0],
+    'assignments' => $conn->query("SELECT COUNT(*) FROM assignments")->fetch_row()[0]
+];
+?>
 <!DOCTYPE html>
-
-<html lang="en">
-
+<html lang="fr">
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/custom.css"> rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Mon LMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-    <title>Admin | Dashboard</title>
-    <link rel="stylesheet" href="bootstrap.css" />
-    <link rel="stylesheet" href="style.css" />
-    <link rel="icon" href="system.png" />
+    <style>
+        .stats-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+        .stats-card:hover {
+            transform: translateY(-3px);
+        }
+        .stats-number {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+    </style>
 </head>
-
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <nav class="navbar navbar-light navbar-expand-lg bg-dark fixed-top">
-                <div class="container-fluid">
-                    <div class="col-4">
-                        <a href="#" class="navbar-brand text-white"><img src="system.png" class="icon2" />Learning Management System</a>
-                    </div>
-
-
-                    <!-- Dropdown -->
-
-
-                    <div class="btn-group col-lg-4">
-                        <!-- check if user log or not -->
-                        <button type="button" class="btn btn-outline-light dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <?php session_start(); 
-                            if (!isset($_SESSION["u"])) {
-                                header("Location: SignIn.php");
-                                exit;
-                            }
-                            ?>
-                            <label class="fs-6"><?php echo ($_SESSION["u"]) ?></label>
-                        </button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="ProfileAdmin.php">Profile</a>
-                            <a class="dropdown-item" href="AdminDash.php">Dashboard</a>
-                            <a class="dropdown-item" href="UserManage.php">Requests</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="SignOut.php">Sign Out</a>
-                        </div>
-                    </div>
-
-                    <!-- End Dropdown -->
-                </div>
-            </nav>
-
-
-            <!-- Menu Bar-->
-            <div class="col-4 col-lg-3 mt-5">
-                <div class="row bg-primary bg-opacity-10 mt-5">
-
-
-                    <div class="col-12 mt-4">
-                        <form action="AdminDash.php">
-                            <button class="btn btn-outline-dark col-12 active" type="submit">Dashboard</button>
-                        </form>
-
-                    </div>
-                    <div class="col-12 mt-3">
-                        <form action="ProfileAdmin.php">
-                            <button class="btn btn-outline-dark col-12" type="submit">Profile</button>
-                        </form>
-
-                    </div>
-
-                    <div class="col-12 mt-3">
-                        <form action="UserManage.php">
-                            <button class="btn btn-outline-dark col-12" type="submit">User Manage</button>
-                        </form>
-
-                    </div>
-
-                    <div class="col-12 mt-3">
-                        <form action="ResultView.php">
-                            <button class="btn btn-outline-dark col-12" type="submit">Results</button>
-                        </form>
-
-                    </div>
-
-                    <div class="col-12 mt-3">
-                        <form action="StudentEnrollment.php">
-                            <button class="btn btn-outline-dark col-12" type="submit">Student Enrollment</button>
-                        </form>
-
-                    </div>
-                    <div class="col-12 mt-3">
-                        <form action="TeacherEnrollment.php">
-                            <button class="btn btn-outline-dark col-12" type="submit">Teacher Enrollment</button>
-                        </form>
-
-                    </div>
-                    <div class="col-12 mt-3">
-                        <form action="AccademicEnrollment.php">
-                            <button class="btn btn-outline-dark col-12" type="submit">Accademic Officer Enrollment</button>
-                        </form>
-
-                    </div>
-
-                    <div class="col-12 mt-5 mb-2">
-                        <form action="SignOut.php">
-                            <button class="btn btn-outline-success col-12" type="submit">Sign Out</button>
-                        </form>
-
-                    </div>
-                </div>
+    <nav class="navbar navbar-dark" style="background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-user-cog me-2"></i>Admin LMS</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><span class="navbar-text text-white">👑 <?php echo htmlspecialchars($_SESSION['user_name']); ?></span></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="SignOut.php"><i class="fas fa-sign-out-alt"></i> Déconnexion</a></li>
+                </ul>
             </div>
-
-            <!-- Menu end -->
-            <div class="col-8 col-lg-9 mt-5">
-                <div class="row">
-                    <div class="col-8 col-lg-9 mt-5"></div>
-                    <div class="">
-                        <label class="fs-2">Dashboard</label>
-                    </div>
-                    <div class="">
-                        <label class="fs-6 text-secondary">Dashboard</label>
-                    </div>
-
-                    <div class="col-12">
-                        <div class="row">
-
-                            <?php 
-                                $connection = new mysqli("localhost","root","Slbh2001@","online_lms");
-// Make array for card topics store
-                                $array = array("Total Admin Count","Total Teacher Count", "Total Student Count","Total Accademic Officer Count");
-// 4 times loop this for loop
-                                for ($i=0; $i < 4; $i++) { 
-                                    # code...
-                                    // check count of users in the given type in this code used
-                                    $type_id = $i+1;
-                                    $table = $connection->query("SELECT COUNT(`username`) AS `count` FROM `user` WHERE `user_type_id`='".$type_id."'");
-
-                                    $row = $table->fetch_assoc();
-
-                                    ?>
-                                    <!-- Creating card for 4 times -->
-                                        <div class="col-sm-6 mt-3">
-                                            <div class="card">
-                                                <div class="card-body bg-opacity-25 bg-primary">
-                                                    <div class="bg-primary bg-opacity-50 p-1">
-                                                        <h5 class="card-title"><?php echo($array[$i])?></h5>
-                                                    </div>
-                                                    <div class="text-center">
-                                                    <p class="card-text fs-4"><?php echo($row["count"])?></p>
-                                                    
-                                                    <a href="UserManage.php" class="btn btn-primary">Manage</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    <?php
-                                }
-                            ?>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
-        <div class="col-12 text-center text-black-50 mt-4 mb-2">
-            <label>Mon Ecole | Solution by David&copy; 2026</label>
+    </nav>
+
+    <div class="container mt-4">
+        <h1><i class="fas fa-chart-pie text-danger me-2"></i>Tableau de bord Administrateur</h1>
+        <p class="text-muted">Vue d'ensemble de la plateforme.</p>
+
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="stats-card text-center">
+                    <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                    <div class="stats-number" style="color: #4299e1;"><?php echo $stats['students']; ?></div>
+                    <p class="text-muted">Étudiants</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card text-center">
+                    <i class="fas fa-chalkboard-teacher fa-2x text-success mb-2"></i>
+                    <div class="stats-number" style="color: #48bb78;"><?php echo $stats['teachers']; ?></div>
+                    <p class="text-muted">Enseignants</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card text-center">
+                    <i class="fas fa-book fa-2x text-warning mb-2"></i>
+                    <div class="stats-number" style="color: #ed8936;"><?php echo $stats['courses']; ?></div>
+                    <p class="text-muted">Cours</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card text-center">
+                    <i class="fas fa-file-alt fa-2x text-danger mb-2"></i>
+                    <div class="stats-number" style="color: #f56565;"><?php echo $stats['assignments']; ?></div>
+                    <p class="text-muted">Devoirs</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <a href="admin_users.php" class="text-decoration-none">
+                    <div class="card action-card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-user-cog fa-3x text-primary mb-3"></i>
+                            <h5>Gérer les utilisateurs</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="admin_courses.php" class="text-decoration-none">
+                    <div class="card action-card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-book fa-3x text-warning mb-3"></i>
+                            <h5>Gérer les cours</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="admin_reports.php" class="text-decoration-none">
+                    <div class="card action-card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-chart-bar fa-3x text-danger mb-3"></i>
+                            <h5>Rapports</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
-
-    <script src="bootstrap.bundle.js"></script>
-    <script src="script.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

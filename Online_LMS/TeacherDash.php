@@ -1,181 +1,160 @@
+<?php
+session_start();
+if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] != 'teacher') {
+    header("Location: SignIn.php?error=Accès réservé aux enseignants");
+    exit();
+}
+
+require_once 'config.php';
+$conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
+
+// Statistiques
+$stats = [
+    'courses' => 0,
+    'students' => 0,
+    'assignments' => 0,
+    'pending' => 0
+];
+
+// Compter les cours
+$result = $conn->query("SELECT COUNT(*) as count FROM courses WHERE teacher = '" . $_SESSION['user_name'] . "'");
+if ($result && $row = $result->fetch_assoc()) {
+    $stats['courses'] = $row['count'];
+}
+
+// Compter les étudiants
+$result = $conn->query("SELECT COUNT(DISTINCT student_id) as count FROM assignments WHERE teacher = '" . $_SESSION['user_name'] . "'");
+if ($result && $row = $result->fetch_assoc()) {
+    $stats['students'] = $row['count'];
+}
+
+// Compter les devoirs
+$result = $conn->query("SELECT COUNT(*) as count FROM assignments WHERE teacher = '" . $_SESSION['user_name'] . "'");
+if ($result && $row = $result->fetch_assoc()) {
+    $stats['assignments'] = $row['count'];
+}
+
+// Compter les devoirs en attente
+$result = $conn->query("SELECT COUNT(*) as count FROM assignments WHERE teacher = '" . $_SESSION['user_name'] . "' AND status = 'pending'");
+if ($result && $row = $result->fetch_assoc()) {
+    $stats['pending'] = $row['count'];
+}
+?>
 <!DOCTYPE html>
-
-<html lang="en">
-
+<html lang="fr">
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/custom.css"> rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord - Enseignant</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <title>Teacher | Dashboard</title>
-  <link rel="stylesheet" href="bootstrap.css" />
-  <link rel="stylesheet" href="style.css" />
-  <link rel="icon" href="system.png" />
+    <style>
+        .stats-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+        .stats-card:hover {
+            transform: translateY(-3px);
+        }
+        .stats-number {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        .action-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
-
 <body>
-  <!-- Teacher dashboard -->
-  <div class="container-fluid">
-    <div class="row">
-      <nav class="navbar navbar-light navbar-expand-lg bg-dark fixed-top">
-        <div class="container-fluid">
-          <div class="col-4">
-            <a href="#" class="navbar-brand text-white"><img src="system.png" class="icon2" />Learning Management System</a>
-          </div>
-
-
-          <!-- Dropdown -->
-
-
-          <div class="btn-group col-lg-4">
-            <button type="button" class="btn btn-outline-light dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-<!-- check if user log in or not -->
-              <?php session_start(); 
-              if (!isset($_SESSION["u"])) {
-                header("Location: SignIn.php");
-                exit;
-            }
-            ?>
-              <label class="fs-6"><?php echo ($_SESSION["u"]) ?></label>
-            </button>
-            <div class="dropdown-menu">
-              <a class="dropdown-item" href="ProfileTeacher.php">Profile</a>
-              <a class="dropdown-item" href="TeacherDash.php">Dashboard</a>
-              <a class="dropdown-item" href="NoteAdd.php">Lesson Notes</a>
-              <a class="dropdown-item" href="AddAssignment.php">Assignments</a>
-              <a class="dropdown-item" href="ResultView.php">Answers</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="SignOut.php">Sign Out</a>
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-chalkboard-teacher me-2"></i>Mon LMS - Enseignant</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><span class="navbar-text text-white">👨‍🏫 <?php echo htmlspecialchars($_SESSION['user_name']); ?></span></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="SignOut.php"><i class="fas fa-sign-out-alt"></i> Déconnexion</a></li>
+                </ul>
             </div>
-          </div>
-
-          <!-- End Dropdown -->
         </div>
-      </nav>
+    </nav>
 
+    <div class="container mt-4">
+        <h1><i class="fas fa-chalkboard-teacher text-success me-2"></i>Tableau de bord Enseignant</h1>
+        <p class="text-muted">Gérez vos cours, vos étudiants et les devoirs.</p>
 
-      <!-- Menu -->
-      <div class="col-4 col-lg-3 mt-5">
-        <div class="row bg-primary bg-opacity-10 mt-5">
-
-
-          <div class="col-12 mt-4">
-            <form action="TeacherDash.php">
-              <button class="btn btn-outline-dark col-12 active" type="submit">Dashboard</button>
-            </form>
-
-          </div>
-          <div class="col-12 mt-3">
-            <form action="ProfileTeacher.php">
-              <button class="btn btn-outline-dark col-12" type="submit">Profile</button>
-            </form>
-
-          </div>
-
-          <div class="col-12 mt-3">
-            <form action="NoteAdd.php">
-              <button class="btn btn-outline-dark col-12" type="submit">Lesson Notes</button>
-            </form>
-
-          </div>
-
-          <div class="col-12 mt-3 mb-4">
-            <form action="AddAssignment.php">
-              <button class="btn btn-outline-dark col-12" type="submit">Assignments</button>
-            </form>
-
-          </div>
-          <div class="col-12 mt-3 mb-4">
-            <form action="ResultView.php">
-              <button class="btn btn-outline-dark col-12" type="submit">Assignment Marks</button>
-            </form>
-
-          </div>
-
-          <div class="col-12 mt-3 mb-3">
-
-            <form action="SignOut.php">
-              <button class="btn btn-outline-success col-12" type="submit">Sign Out</button>
-            </form>
-
-          </div>
+        <!-- Statistiques -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="stats-card text-center">
+                    <i class="fas fa-book fa-2x text-success mb-2"></i>
+                    <div class="stats-number" style="color: #48bb78;"><?php echo $stats['courses']; ?></div>
+                    <p class="text-muted">Mes cours</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card text-center">
+                    <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                    <div class="stats-number" style="color: #4299e1;"><?php echo $stats['students']; ?></div>
+                    <p class="text-muted">Étudiants</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card text-center">
+                    <i class="fas fa-tasks fa-2x text-warning mb-2"></i>
+                    <div class="stats-number" style="color: #ed8936;"><?php echo $stats['assignments']; ?></div>
+                    <p class="text-muted">Devoirs</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card text-center">
+                    <i class="fas fa-clock fa-2x text-danger mb-2"></i>
+                    <div class="stats-number" style="color: #f56565;"><?php echo $stats['pending']; ?></div>
+                    <p class="text-muted">En attente</p>
+                </div>
+            </div>
         </div>
-      </div>
 
-      <!-- Menu end -->
-      <div class="col-8 col-lg-9 mt-5">
-        <div class="row">
-          <div class="col-8 col-lg-9 mt-5"></div>
-          <div class="">
-            <label class="fs-2">Dashboard</label>
-          </div>
-          <div class="">
-            <label class="fs-6 text-secondary">Dashboard</label>
-          </div>
-
-          <div class="col-12">
-            <div class="row">
-              <div class="col-12">
-                <label class="fs-4 text-success">Active Classes</label>
-              </div>
-<!-- create cards which classes are enroll in teacher -->
-              <?php
-              $connection = new mysqli("localhost", "root", "Slbh2001@", "online_lms");
-
-              $table = $connection->query("SELECT * FROM `user_has_grade_has_subject` WHERE `user_username`='" . $_SESSION["u"] . "' AND `complete_status_id`='3'");
-// search teacher classes
-              if ($table->num_rows) {
-                for ($i = 0; $i < $table->num_rows; $i++) {
-                  # code...
-
-                  $row = $table->fetch_assoc();
-
-                  $table2 = $connection->query("SELECT * FROM `subject` WHERE `id`='" . $row["grade_has_subject_subject_id"] . "'");
-                  $row2 = $table2->fetch_assoc();
-                  $subject = $row2["name"];
-
-                  $table3 = $connection->query("SELECT * FROM `grade` WHERE `id`='" . $row["grade_has_subject_grade_id"] . "'");
-                  $row3 = $table3->fetch_assoc();
-                  $grade = $row3["name"];
-
-              ?>
-              <!-- cards content -->
-                  <div class="col-sm-6 mt-3">
-                    <div class="card">
-                      <div class="card-body bg-opacity-25 bg-primary">
-                        <div class="bg-primary bg-opacity-50 p-1">
-                          <h5 class="card-title">Class</h5>
-                        </div>
-
-                        <p class="card-text fs-5">Grade - <?php echo ($grade) ?></p>
-                        <p class="card-text fs-5">Subject - <?php echo ($subject) ?></p>
-                        <a href="AddAssignment.php" class="btn btn-primary">Assignments</a>
-                        <a href="NoteAdd.php" class="btn btn-primary">Lesson Notes</a>
-
-                      </div>
+        <!-- Actions rapides -->
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card action-card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-plus-circle fa-3x text-success mb-3"></i>
+                        <h5>Créer un cours</h5>
+                        <p class="text-muted">Ajouter un nouveau cours</p>
+                        <a href="teacher_courses.php" class="btn btn-success">Gérer</a>
                     </div>
-                  </div>
-              <?php
-                }
-              }
-              ?>
-
+                </div>
             </div>
-          </div>
+            <div class="col-md-4">
+                <div class="card action-card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-file-alt fa-3x text-primary mb-3"></i>
+                        <h5>Devoirs</h5>
+                        <p class="text-muted">Créer et corriger des devoirs</p>
+                        <a href="teacher_assignments.php" class="btn btn-primary">Gérer</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card action-card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-user-graduate fa-3x text-warning mb-3"></i>
+                        <h5>Étudiants</h5>
+                        <p class="text-muted">Suivre vos étudiants</p>
+                        <a href="teacher_students.php" class="btn btn-warning">Voir</a>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-
     </div>
-    <div class="col-12 text-center text-black-50 mt-4 mb-2">
-      <label>Mon Ecole | Solution by David&copy; 2026</label>
-    </div>
-  </div>
-
-  <script src="bootstrap.bundle.js"></script>
-  <script src="script.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

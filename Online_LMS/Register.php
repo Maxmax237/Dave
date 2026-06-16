@@ -62,7 +62,7 @@
                     <p class="text-muted">Rejoignez notre communauté d'apprentissage</p>
                 </div>
                 
-                <form action="process_register.php" method="POST">
+                <form action="create_account.php" method="POST">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Type d'utilisateur</label>
                         <select class="form-select" name="user_type" required>
