@@ -1,0 +1,26 @@
+/* Vos couleurs personnalisées */
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --accent-color: #e74c3c;
+}
+
+/* Personnaliser la navbar */
+.navbar-custom {
+    background: linear-gradient(135deg, #2c3e50, #3498db);
+}
+
+/* Personnaliser les cartes */
+.card-hover:hover {
+    transform: translateY(-5px);
+    transition: transform 0.3s ease;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* Footer moderne */
+.footer-modern {
+    background: #2c3e50;
+    color: white;
+    padding: 30px 0;
+    margin-top: 50px;
+}
