@@ -1,147 +1,128 @@
 <!DOCTYPE html>
-
-<html lang="en">
-
+<html lang="fr">
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/custom.css"> rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Register</title>
-    <link rel="stylesheet" href="bootstrap.css" />
-    <link rel="stylesheet" href="style.css" />
-    <link rel="icon" href="system.png" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - Mon LMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .register-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .register-card h2 {
+            color: #2d3748;
+            font-weight: 700;
+        }
+        .form-control {
+            border-radius: 10px;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .btn-register {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            border: none;
+            width: 100%;
+        }
+        .btn-register:hover {
+            transform: scale(1.02);
+            transition: all 0.3s ease;
+        }
+        .input-group-text {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px 0 0 10px;
+        }
+    </style>
 </head>
-
 <body>
-<!-- Register process -->
-<!-- In here user can send request to create account -->
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12 col-lg-6">
-                <div class="row">
-                    <div class="mt-3 m-2">
-                        <img src="system.png" class="icon" />
-                        <label class="fs-2">Learning Management System</label>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="register-card">
+                <div class="text-center mb-4">
+                    <h2>Créer un compte</h2>
+                    <p class="text-muted">Rejoignez notre communauté d'apprentissage</p>
+                </div>
+                
+                <form action="process_register.php" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Type d'utilisateur</label>
+                        <select class="form-select" name="user_type" required>
+                            <option value="student">Étudiant</option>
+                            <option value="teacher">Enseignant</option>
+                            <option value="employer">Employeur</option>
+                        </select>
                     </div>
-                    <div class="col-12 mt-3">
-                        <h1 class="text-primary text-center rounded-3">Register</h1>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Prénom</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" class="form-control" name="first_name" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Nom</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" class="form-control" name="last_name" required>
+                            </div>
+                        </div>
                     </div>
-
-                    <div class="col-2"></div>
-                    <div class="col-8 d-block align-items-center bg-primary bg-opacity-10 rounded-3">
-
-                        <div class="col-12 mt-3">
-                            <label class="form-label text-black-50">User Type</label>
-                            <select class="form-select form-select-sm" aria-label=".form-select-sm example" id="userType">
-                                <option selected value="3">Student</option>
-                                <option value="2">Teacher</option>
-                                <option value="1">Admin</option>
-                                <option value="4">Accademic Officer</option>
-                            </select>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Téléphone</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                            <input type="tel" class="form-control" name="mobile" required>
                         </div>
-
-                        <div class="col-12 mt-3">
-                            <label class="form-label text-black-50">First Name</label>
-                            <input type="text" class="form-control" id="fname" />
-                        </div>
-
-                        <div class="col-12 mt-3">
-                            <label class="form-label text-black-50">Last Name</label>
-                            <input type="text" class="form-control" id="lname" />
-                        </div>
-
-                        <div class="col-12 mt-3">
-                            <label class="form-label text-black-50">Mobile</label>
-                            <input type="text" class="form-control" id="mobile" />
-                        </div>
-
-                        <div class="col-12 mt-3">
-                            <label class="form-label text-black-50">Email</label>
-                            <input type="text" class="form-control" id="email" />
-                        </div>
-
-                        <div class="col-12 mt-3">
-                            <label class="form-label text-black-50">Address Line 1</label>
-                            <input type="text" class="form-control" id="address1" />
-                        </div>
-
-                        <div class="col-12 mt-3">
-                            <label class="form-label text-black-50">Address Line 2</label>
-                            <input type="text" class="form-control" id="address2" />
-                        </div>
-
-                        <div class="col-12 mt-3">
-                            <label class="form-label text-black-50">City</label>
-                            <select class="form-select form-select-sm" aria-label=".form-select-sm example" id="city">
-                                <option selected value="0">Select</option>
-
-                                <!-- Load City -->
-
-                                <?php 
-                                    $connection = new mysqli("localhost","root","Slbh2001@","online_lms");
-                                    $table = $connection->query("SELECT * FROM `city`");
-
-                                    for ($i=0; $i < $table->num_rows; $i++) { 
-                                        # code...
-                                        $row = $table->fetch_assoc();
-
-                                        ?>
-                                            <option value="<?php echo($row["id"])?>"><?php echo($row["name"])?></option>
-                                        <?php
-                                    }
-                                ?>
-
-                            </select>
-                        </div>
-
-                        <div class="form-group col-12 mt-3">
-                            <label for="inputState" class="text-black-50">Gender</label>
-                            <select class="form-control" id="gender">
-                                <option selected value="0">Choose...</option>
-                                <option value="1">Male</option>
-                                <option value="2">Female</option>
-                            </select>
-                        </div>
-
-                        <div class="col-12 mt-3" id="message">
-
-                        </div>
-
-                        <div class="d-grid mt-2">
-                            <button class="btn btn-danger" onclick="SendRequest();">Send Request</button>
-                        </div>
-                        <div class="d-grid mt-2 mb-3">
-                            <!-- send request to create account and it will store in a request table while officer accept it -->
-                            <form action="SignIn.php">
-                                <button class="btn btn-primary col-12" type="submit"> Already Registered? Sign In</button>
-                            </form>
-                        </div>
-
-
                     </div>
-
-
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Email</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            <input type="email" class="form-control" name="email" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Mot de passe</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            <input type="password" class="form-control" name="password" required>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-register">Créer mon compte</button>
+                </form>
+                
+                <div class="text-center mt-3">
+                    <p class="text-muted">Déjà un compte ? <a href="SignIn.php" class="text-decoration-none fw-bold" style="color: #667eea;">Se connecter</a></p>
                 </div>
             </div>
-            <div class="col-12 col-lg-6">
-                <img src="signIn.png" class="img1" />
-            </div>
-        </div>
-        <div class="col-12 text-center text-black-50 mt-4 mb-2">
-            <label>Mon Ecole | Solution by David&copy; 2026</label>
         </div>
     </div>
-
-
-
-    <script src="bootstrap.bundle.js"></script>
-    <script src="script.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

@@ -1,278 +1,87 @@
 <!DOCTYPE html>
-
-<html lang="en">
-
+<html lang="fr">
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/custom.css"> rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon LMS - Accueil</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <title>Home</title>
-  <link rel="stylesheet" href="bootstrap.css" />
-  <link rel="stylesheet" href="style.css" />
-  <link rel="icon" href="system.png" />
 </head>
-
 <body>
-  <!-- Home view (first opening page) -->
-  <div class="container-fluid">
-    <div class="row g-4">
-      <nav class="navbar navbar-light navbar-expand-lg bg-dark fixed-top">
-        <div class="container-fluid">
-          <div class="col-4">
-            <a href="#" class="navbar-brand text-white"><img src="system.png" class="icon2" />Learning
-              Management System</a>
-          </div>
-
-          <!-- Check if user was log or not. If user already log he can see dropdown else no user sign in and register button will see. -->
-          <?php session_start();
-          if (!isset($_SESSION["u"])) {
-          ?>
-            <div class="btn-group col-lg-3 col-3 text-center">
-              <div class="row g-4">
-                <div class="col-6">
-                  <form action="SignIn.php">
-                    <button class="fs-5 text-black btn btn-primary col-12">Sign In</button>
-                  </form>
-                </div>
-                <div class="col-6">
-                  <form action="Register.php">
-                    <button class="fs-5 text-black btn btn-danger col-12">Register</button>
-                  </form>
-                </div>
-              </div>
+    <!-- Navbar Bootstrap -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">Mon LMS</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="index.php">Accueil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="SignIn.php">Connexion</a></li>
+                    <li class="nav-item"><a class="nav-link" href="Register.php">Inscription</a></li>
+                </ul>
             </div>
-          <?php
-          } else {
-          ?>
-            <div class="btn-group col-lg-4 col-3">
-              <button type="button" class="btn btn-outline-light dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-
-                <label class="fs-6"><?php echo ($_SESSION["u"]) ?></label>
-              </button>
-              <!-- Check dropdown list links to suitable user types -->
-              <div class="dropdown-menu">
-                <?php 
-                  $connection = new mysqli("localhost", "root", "Slbh2001@", "online_lms");
-                  $table = $connection->query("SELECT * FROM `user` WHERE `username`='".$_SESSION["u"]."'");
-
-                  if($table->num_rows){
-                    $row = $table->fetch_assoc();
-                    $userType = $row["user_type_id"];
-
-                    if($userType=="1"){
-                      //admin
-                      ?>
-                        <a class="dropdown-item" href="ProfileAdmin.php">Profile</a>
-                        <a class="dropdown-item" href="AdminDash.php">Dashboard</a>
-                      <?php
-                    }else if($userType=="2"){
-                      //teacher
-                      ?>
-                      <a class="dropdown-item" href="ProfileTeacher.php">Profile</a>
-                      <a class="dropdown-item" href="TeacherDash.php">Dashboard</a>
-                    <?php
-                    }else if($userType=="3"){
-                      //student
-                      ?>
-                        <a class="dropdown-item" href="ProfileStu.php">Profile</a>
-                        <a class="dropdown-item" href="StudentDash.php">Dashboard</a>
-                      <?php
-                    }else if($userType=="4"){
-                      //accademic officer
-                      ?>
-                        <a class="dropdown-item" href="ProfileAccademic.php">Profile</a>
-                        <a class="dropdown-item" href="AccademicDash.php">Dashboard</a>
-                      <?php
-                    }
-                  }
-                ?>
-                
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="SignOut.php">Sign Out</a>
-              </div>
-            </div>
-          <?php
-          }
-          ?>
-
-          <!-- Site Content -->
         </div>
-      </nav>
+    </nav>
 
-      <div class="col-12 mt-5 mb-2"></div>
-      <div class="col-lg-12">
-
-      <!-- Carousal -->
-        <div class="col-12 mt-5 mb-2"></div>
-        <div class="col-12 d-none d-lg-block mb-3 mt-3">
-          <div class="row g-4">
-            <div id="carouselExampleIndicators" class="offset-2 col-8 carousel slide" data-bs-ride="carousel">
-              <div class="carousel-indicators">
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-              </div>
-              <div class="carousel-inner">
-                <div class="carousel-item active text-center">
-                  <img src="image3.jpg" class="d-block img3" />
-
-                  <div class="carousel-caption d-none d-md-block poster-caption">
-                    <h5 class="poster-title">Welcome to Learning Management System</h5>
-
-                  </div>
+    <!-- Hero Section -->
+    <div class="bg-light py-5">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold">Apprenez à votre rythme</h1>
+                    <p class="lead">Plateforme d'apprentissage en ligne moderne et interactive</p>
+                    <a href="Register.php" class="btn btn-primary btn-lg">Commencer maintenant</a>
                 </div>
-
-                <div class="carousel-item text-center">
-                  <img src="image1.webp" class="d-block img3" />
+                <div class="col-lg-6">
+                    <img src="https://via.placeholder.com/600x400" alt="Learning" class="img-fluid rounded shadow">
                 </div>
-
-                <div class="carousel-item text-center">
-                  <img src="image2.webp" class="d-block img3" />
-                </div>
-              </div>
-              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-              </button>
-              <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-              </button>
             </div>
-          </div>
         </div>
-
-      </div>
-
-      <!-- Content with jQuery commands -->
-      <div class="col-12 mt-5">
-        <div class="row g-4">
-          <div class="col-6 bg-success text-center">
-            <image src="img4.avif" class="img4" />
-          </div>
-          <div class="col-6 bg-success text-center">
-            <h1 class="text-center mt-5 slide-left">Start your</h1>
-            <h1 class="text-center slide-left">Learning With Us</h1>
-            <form action="http://localhost/Online_LMS/Register.php">
-              <button class="btn btn-outline-warning mb-5 mt-5 button fs-2 slide-left" type="submit">
-                Register Here
-              </button>
-            </form>
-
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12 mt-5 mb-5" id="test">
-        <div class="row g-4">
-
-          <div class="col-12 text-center text-secondary mt-3 mb-3">
-            <h1>Services</h1>
-          </div>
-          <div class="col-4 text-center mt-4 mb-3 slide-bottom">
-            <image src="Pictures/register.png" class="image3" />
-            <label class="fs-5 text-black-50">Registration</label>
-          </div>
-          <div class="col-4 text-center mt-4 mb-3 slide-bottom">
-            <image src="Pictures/learning.png" class="image3" />
-            <label class="fs-5 text-black-50">Learning Materials</label>
-          </div>
-          <div class="col-4 text-center mt-4 mb-3 slide-bottom">
-            <image src="Pictures/assignment.png" class="image3" />
-            <label class="fs-5 text-black-50">Assignments</label>
-          </div>
-          <div class="col-4 text-center mt-4 mb-5 slide-bottom">
-            <image src="Pictures/check-mark.png" class="image3" />
-            <label class="fs-5 text-black-50">Giving Marks</label>
-          </div>
-          <div class="col-4 text-center mt-4 mb-5 slide-bottom">
-            <image src="Pictures/higher-studies.png" class="image3" />
-            <label class="fs-5 text-black-50">Upgrade Classes</label>
-          </div>
-          <div class="col-4 text-center mt-4 mb-5 slide-bottom">
-            <image src="Pictures/24-hours-support.png" class="image3" />
-            <label class="fs-5 text-black-50">24×7 Support</label>
-          </div>
-
-        </div>
-      </div>
-
-<!-- Footer -->
-      <div class="col-12 bg-dark">
-        <div class="row g-4">
-          <div class="text-center col-12">
-            <img src="system.png" class="icon2" />
-            <a href="#" class="navbar-brand text-light">Learning Management System</a>
-          </div>
-
-          <div class="col-4 justify-content-center text-center">
-            <div class="row g-4">
-              <div class="col-1 text-center">
-                <form action="https://www.facebook.com/">
-                  <button class="bg-dark border-0" type="submit">
-                    <img src="facebook.svg" />
-                  </button>
-                </form>
-              </div>
-              <div class="col-1 text-center">
-                <form action="https://www.whatsapp.com/">
-                  <button class="bg-dark border-0" type="submit">
-                    <img src="whatsapp.svg" />
-                  </button>
-                </form>
-              </div>
-              <div class="col-1 text-center">
-                <form action="https://www.linkedin.com/">
-                  <button class="bg-dark border-0" type="submit">
-                    <img src="linkedin.svg" />
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
-
-          <div class="text-white fs-5 text-start col-12 mt-2 mb-2">
-            <span>Contact Us</span>
-          </div>
-          <div class="text-white-50 fs-6 text-start col-12">
-            <div class="row g-4">
-              <div class="col-12 mb-2">
-                <span>+237692030989/</span>
-              </div>
-              <div class="col-12">
-                <span>Mon Ecole,</span>
-              </div>
-              <div class="col-12">
-                <span>ikenghengadavid@gmail.com</span>
-              </div>
-            </div>
-          </div>
-          <div class="text-center col-12">
-            <p class="text-white-50 mt-3 mb-1">
-              Copyright 2026&copy; – Mon Ecole. All Rights Reserved.
-              Solution by David Lakruwan
-            </p>
-          </div>
-          <div class="text-center col-12">
-            <a href="#" class="text-info">Terms and conditions</a>
-            <label class="text-white-50 fw-bold">|</label>
-            <a href="#" class="text-info">Policies</a>
-          </div>
-        </div>
-      </div>
-
     </div>
-  </div>
 
-  <script src="bootstrap.bundle.js"></script>
-  <script src="jquery.js"></script>
-  <script src="jquery.fadethis.js"></script>
-  <script src="script.js"></script>
+    <!-- Services Section -->
+    <div class="container py-5">
+        <h2 class="text-center mb-4">Nos Services</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-user-graduate fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Inscription</h5>
+                        <p class="card-text">Créez votre compte en quelques clics</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-book fa-3x text-success mb-3"></i>
+                        <h5 class="card-title">Cours</h5>
+                        <p class="card-text">Accédez à des cours de qualité</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-tasks fa-3x text-warning mb-3"></i>
+                        <h5 class="card-title">Devoirs</h5>
+                        <p class="card-text">Soumettez vos devoirs en ligne</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container text-center">
+            <p>&copy; 2026 Mon LMS. Tous droits réservés.</p>
+        </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>
